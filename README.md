@@ -12,6 +12,7 @@ This project implements a system for ingesting and querying consumer account dat
      - `max_balance` (optional): Maximum balance amount.
      - `status` (optional): Account status (`INACTIVE`, `PAID_IN_FULL`, etc.).
      - `consumer_name` (optional): Consumer's name.
+     -	`offset` (optional): The starting position in the dataset (default: 0).
 
    **Example Request**:
    `curl -X GET “http://127.0.0.1:8000/api/accounts/?min_balance=50000&status=INACTIVE” `
