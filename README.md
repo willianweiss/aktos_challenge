@@ -58,4 +58,4 @@ Run migrations to create the required tables:
 ## Testing
 
 Run the test suite to validate functionality:
-`pytest`
+`python manage.py test`
