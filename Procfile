@@ -1,0 +1,1 @@
+web: gunicorn aktos_challenge.wsgi:application
