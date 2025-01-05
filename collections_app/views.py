@@ -2,7 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.pagination import LimitOffsetPagination
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .models import Client, Account, Consumer
 from .serializers import AccountSerializer
 import csv
@@ -39,6 +42,37 @@ class AccountListView(ListAPIView):
 
 
 class CSVUploadView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
+    @swagger_auto_schema(
+        operation_description="Upload a CSV file to process consumer account data.",
+        manual_parameters=[
+            openapi.Parameter(
+                name="file",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_FILE,
+                description="The CSV file to upload",
+                required=True,
+            )
+        ],
+        responses={
+            200: openapi.Response(
+                description="CSV file processed successfully",
+                examples={
+                    "application/json": {"message": "CSV file processed successfully"}
+                },
+            ),
+            400: openapi.Response(
+                description="Error in file upload",
+                examples={
+                    "application/json": {
+                        "error": "File not provided. Please upload a CSV file.",
+                        "missing_fields": ["field1", "field2"],
+                    }
+                },
+            ),
+        },
+    )
     def post(self, request, *args, **kwargs):
         if "file" not in request.FILES:
             return Response(
