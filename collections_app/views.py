@@ -16,7 +16,64 @@ class AccountListView(ListAPIView):
     serializer_class = AccountSerializer
     filter_backends = [DjangoFilterBackend]
     pagination_class = LimitOffsetPagination
-    filterset_fields = ["status"]
+
+    @swagger_auto_schema(
+        operation_description="Retrieve a list of accounts with optional filters",
+        manual_parameters=[
+            openapi.Parameter(
+                name="min_balance",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_NUMBER,
+                description="Minimum balance to filter accounts",
+            ),
+            openapi.Parameter(
+                name="max_balance",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_NUMBER,
+                description="Maximum balance to filter accounts",
+            ),
+            openapi.Parameter(
+                name="status",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Filter accounts by status (e.g., 'INACTIVE', 'PAID_IN_FULL')",
+            ),
+            openapi.Parameter(
+                name="consumer_name",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Filter accounts by consumer name (case-insensitive match)",
+            ),
+        ],
+        responses={
+            200: openapi.Response(
+                description="List of accounts",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        "count": openapi.Schema(
+                            type=openapi.TYPE_INTEGER,
+                            description="Total number of accounts",
+                        ),
+                        "next": openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description="URL for the next page",
+                        ),
+                        "previous": openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description="URL for the previous page",
+                        ),
+                        "results": openapi.Schema(
+                            type=openapi.TYPE_ARRAY,
+                            items=openapi.Schema(type=openapi.TYPE_OBJECT),
+                        ),
+                    },
+                ),
+            )
+        },
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         min_balance = self.request.query_params.get("min_balance")

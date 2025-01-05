@@ -21,6 +21,7 @@ The project is already deployed on Heroku and can be accessed via the following 
      - `status` (optional): Account status (`INACTIVE`, `PAID_IN_FULL`, etc.).
      - `consumer_name` (optional): Consumer's name.
      - `offset` (optional): The starting position in the dataset (default: 0).
+     - `limit` (optional): Number of results to return per page (default: 10).
 
    **Example Request**:
    ```bash
